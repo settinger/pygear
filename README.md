@@ -1,6 +1,5 @@
 # pygear
 
-<<<<<<< HEAD
 Let's make gears that look like whatever we want!
 
 ## Dependencies
@@ -19,6 +18,3 @@ For now, run the function `doThings(filename, overlap, ratio, steps)`.
 
 * Set up animation
 * Add better documentation
-=======
-Let's make gears that look like whatever we want.
->>>>>>> master/master
