@@ -12,7 +12,6 @@ TODO:
 
 import Image
 import numpy as np
-pi = np.pi # Because I always forget
 
 def loadGearImage(filename):
     '''Loads image, converts to a B/W array.'''
@@ -66,11 +65,20 @@ def writeOutputGear(gear,filename):
 def dist(x, y):
     return np.sqrt(x*x+y*y)
 
-# Get size of gear from size of image
+def outputCleanup(image):
+    '''Remove the 'halo' around output image; maybe apply median filter?'''
+    newImage = image
+    size = len(image) # Should be same number of rows/columns
+    radius = size/2.
+    for row in range(size):
+        for col in range(size):
+            if dist(row-radius, col-radius) >= radius-.5:
+                newImage[row][col] = 255.0
+    return newImage
 
-def doThings(filename, ratio, toothsize, steps):
+def doThings(filename, ratio, overlap, steps):
     inputGear = loadGearImage(filename)
-    offset = (ratio+1-toothsize, 0)
+    offset = (ratio+1-overlap, 0)
     inputCoords, imageScale = getBlackPixels(inputGear, offset)
     inputImageSize = int(np.round(2./imageScale))
     outputImageSize = int(np.ceil(inputImageSize*ratio))
@@ -83,14 +91,16 @@ def doThings(filename, ratio, toothsize, steps):
         coords = rotatePts(inputCoords, offset, theta*step)
         addPoints = []
         for coord in coords:
-            if dist(*coord)<(ratio+1-toothsize):
+            if dist(*coord)<(ratio+1-overlap):
                 addPoints += [coord]
         # Rotate the points that will contribute to the output gear's profile
         addPoints = rotatePts(addPoints, (0,0), phi*step)
         # Convert those points back into pixels for output gear
         outputGear = outputGearImage(outputGear, addPoints, imageScale, ratio)
-        # Animate output gear?
-        print step
+        print step # Debug
+    # Clean up image
+    outputGear = outputCleanup(outputGear)
+    # Should also make little marks for centroids and distances
+    # Animate?
     # Save image
     writeOutputGear(outputGear, 'agear.png')
-    # Should also make little marks for centroids and distances
