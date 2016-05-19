@@ -2,3 +2,4 @@ IGNOREME/
 .spyderworkspace
 .spyderproject
 main.pyc
+.gitignore
