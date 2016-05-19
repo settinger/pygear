@@ -4,6 +4,8 @@ Let's make gears that look like whatever we want!
 
 _NOTA BENE:_ this is a gear maker based on the video ["How to make Organically-Shaped Gears"](https://youtu.be/3LdlSAN1yks) by Clayton Boyer. This approach is not suited to gears that drastically change their gear ratios, for example [nautilus gears](https://youtu.be/IUR-T4Nw-Sk).
 
+[![Gear Demos: one success, one failure](https://img.youtube.com/vi/2XJWHQcnk54/0.jpg)](https://www.youtube.com/watch?v=2XJWHQcnk54)
+
 ## Dependencies
 
 Requires numpy and PIL. Written in Python 2.7.
