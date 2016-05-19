@@ -2,17 +2,20 @@
 
 Let's make gears that look like whatever we want!
 
+_NOTA BENE:_ this is a gear maker based on the video ["How to make Organically-Shaped Gears"](https://youtu.be/3LdlSAN1yks) by Clayton Boyer. This approach is not suited to gears that drastically change their gear ratios, for example [nautilus gears](https://youtu.be/IUR-T4Nw-Sk).
+
 ## Dependencies
 
-Requires numpy and PIL. Written in Python 2.7
+Requires numpy and PIL. Written in Python 2.7.
 
 ## Operation
 
-For now, run the function `doThings(filename, overlap, ratio, steps)`.
-* `filename` is the input gear image source (for now, the output is always `agear.png`)
-* `overlap` controls how close the gears' axes are. 1.0 is a good value to start with.
-* `ratio` is the gear ratio. For example, a ratio of 2 means the input gear completes two rotations in the time it takes the output gear to complete one rotation. Right now, this has to be an integer value.
-* `steps` is the number of steps in the image processing process. 1000 is good.
+Run `main.py` and select your input gear shape. The program assumes the center of the image is the center of the gear. After some calculation time, the program will prompt you to save your output gear as an image file.
+
+If you want to change the gear generation parameters, edit the following variables at the start of `main.py`:
+* `gearRatio` is the gear ratio. For example, a ratio of 2 means the input gear completes two rotations in the time it takes the output gear to complete one rotation. Right now, this has to be an integer value.
+* `gearOverlap` controls how close the gears' axes are. It should be between 0.0 and 1.0. I'd say 1.0 is a good value to start with.
+* `computationSteps` is the number of steps in the image processing process. Too few steps and you'll be left with lots of speckles and noise outside output gear perimeter. Too many steps and you'll waste computer time without seeing much of an effect. 1000 is a good value to start with.
 
 ## TODO:
 
