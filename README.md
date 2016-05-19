@@ -4,7 +4,7 @@ Let's make gears that look like whatever we want!
 
 ## Dependencies
 
-Requires numpy and PIL. I could change it to only rely on PIL pretty easily, I should do that soon.
+Requires numpy and PIL. Written in Python 2.7
 
 ## Operation
 
@@ -16,5 +16,5 @@ For now, run the function `doThings(filename, overlap, ratio, steps)`.
 
 ## TODO:
 
-* Set up animation
+* Set up animation (there is an aborted attempt in the file `animate.py`)
 * Add better documentation

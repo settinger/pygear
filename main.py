@@ -3,18 +3,41 @@
 Updated Gear Math Python
 
 @author: Sam Ettinger
+EttingerSam@gmail.com
+May 19, 2016
+
+TODO:
+Add a GUI?
 """
 
-'''
-TODO:
-* Add support for non-integer gear ratios (e.g. 3:2, 5:3)
-'''
+''''''''''''''''''''''''''
+'''IMPORTANT PARAMETERS'''
+''''''''''''''''''''''''''
+# Define the gear ratio, which is the number of rotations the input gear com-
+# pletes for each one rotation of the output gear. Must be a positive integer.
+gearRatio = 2
+
+# Define the gear overlap. This should be a decimal value between 0 and 1.
+# This is analogous to tooth size on a spur gear, with 0.0 being "no teeth"
+# and 1.0 being "pretty big teeth."
+gearOverlap = 1.0
+
+# Define the number of computation steps. This is how many tiny rotations the
+# program performs to compute the final bitmap. Higher numbers produce better
+# gear profiles, with a tradeoff in speed. Must be an integer.
+computationSteps = 1000
+
+''''''''''''''''''''''''''
+'''   END PARAMETERS   '''
+''''''''''''''''''''''''''
 
 import Image
 import numpy as np
+import tkFileDialog
 
-def loadGearImage(filename):
+def loadGearImage():
     '''Loads image, converts to a B/W array.'''
+    filename = tkFileDialog.askopenfilename()
     img = Image.open(filename)
     img.load()
     data = np.asarray(img)
@@ -36,14 +59,14 @@ def getBlackPixels(image, offset):
                 x = scale*(col - (cols-1)/2.) + offset[0]
                 y = scale*(row - (rows-1)/2.) + offset[1]
                 coords += [(x, y)]
-    return coords, scale
+    return coords, size
 
-def outputGearImage(image, coords, scale, ratio):
+def outputGearImage(image, coords, size, ratio):
     '''Draws coordinates as pixels on image'''
     newImage = image
     for (x,y) in coords:
-        row = np.floor((y+ratio)*ratio/(2.*scale))
-        col = np.floor((x+ratio)*ratio/(2.*scale))
+        row = np.floor((y+ratio)*size/(2*ratio))
+        col = np.floor((x+ratio)*size/(2*ratio))
         newImage[row][col] = 255.0
     return newImage
     
@@ -76,16 +99,14 @@ def outputCleanup(image):
                 newImage[row][col] = 255.0
     return newImage
 
-def doThings(filename, ratio, overlap, steps):
-    inputGear = loadGearImage(filename)
+def doThings(ratio=gearRatio, overlap=gearOverlap, steps=computationSteps):
+    inputGear = loadGearImage()
     offset = (ratio+1-overlap, 0)
-    inputCoords, imageScale = getBlackPixels(inputGear, offset)
-    inputImageSize = int(np.round(2./imageScale))
-    outputImageSize = int(np.ceil(inputImageSize*ratio))
-#    outputCoords = []
+    inputCoords, inputImageSize = getBlackPixels(inputGear, offset)
+    outputImageSize = inputImageSize*ratio
     outputGear = np.zeros([outputImageSize, outputImageSize])
-    theta = 2*np.pi*ratio/steps    # TODO: Change these two lines in order...
-    phi = 2*np.pi/steps            # ...to accommodate non-integer gear ratios
+    theta = 2*np.pi/steps
+    phi = 2*np.pi/(steps*ratio)
     # Rotation math
     for step in range(steps):
         coords = rotatePts(inputCoords, offset, theta*step)
@@ -93,14 +114,21 @@ def doThings(filename, ratio, overlap, steps):
         for coord in coords:
             if dist(*coord)<(ratio+1-overlap):
                 addPoints += [coord]
-        # Rotate the points that will contribute to the output gear's profile
-        addPoints = rotatePts(addPoints, (0,0), phi*step)
-        # Convert those points back into pixels for output gear
-        outputGear = outputGearImage(outputGear, addPoints, imageScale, ratio)
-        print step # Debug
+        # Rotate the points that contribute to the output gear's profile
+        for extraRotation in range(ratio):
+            rotateBy = phi*step + 2*np.pi*extraRotation/ratio
+            addPointsRot = rotatePts(addPoints, (0,0), rotateBy)
+            # Convert those points into pixels, draw on output gear
+            outputGear = outputGearImage(outputGear, addPointsRot, outputImageSize, ratio)
+        print('Progress: {}/{}'.format(step, steps)) # Debug
     # Clean up image
     outputGear = outputCleanup(outputGear)
     # Should also make little marks for centroids and distances
     # Animate?
     # Save image
-    writeOutputGear(outputGear, 'agear.png')
+    outFilename = tkFileDialog.asksaveasfilename(defaultextension='.png')
+    writeOutputGear(outputGear, outFilename)
+    #return inputGear, outputGear
+    
+if __name__ == '__main__':
+    doThings()
