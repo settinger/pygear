@@ -13,9 +13,9 @@ Requires numpy and PIL. Written in Python 2.7.
 ## Operation
 
 Run `main.py` and select your input gear shape. The program assumes the center of the image is the center of the gear. After some calculation time, the program will prompt you to save your output gear as an image file. It will then prompt you to save a "crossbar" image. So, for an input that looks like this:
-[[https://github.com/settinger/pygear/blob/master/img/test_gear_in.png|alt=Input]]
+![](https://github.com/settinger/pygear/blob/master/img/test_gear_in.png "Input")
 ...you'll get two outputs:
-[[https://github.com/settinger/pygear/blob/master/img/test_gear_out.png|alt=Output]] [[https://github.com/settinger/pygear/blob/master/img/test_crossbar.png|alt=Crossbar]]
+![](https://github.com/settinger/pygear/blob/master/img/test_gear_out.png "Output") ![](https://github.com/settinger/pygear/blob/master/img/test_crossbar.png "Crossbar")
 
 If you want to change the gear generation parameters, edit the following variables at the start of `main.py`:
 * `gearRatio` is the gear ratio. For example, a ratio of 2 means the input gear completes two rotations in the time it takes the output gear to complete one rotation. Right now, this has to be an integer value.
