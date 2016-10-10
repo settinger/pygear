@@ -50,7 +50,7 @@ def getBlackPixels(image, offset):
        Scales result to [-1, 1] and then adds an offset.'''
     rows = len(image)
     cols = len(image[0])
-    size = rows*(rows>=cols) + cols*(cols>rows) # Get largest dimension
+    size = max([rows, cols])
     scale = 2./size
     coords =  []
     for row in range(rows):
@@ -67,7 +67,10 @@ def outputGearImage(image, coords, size, ratio):
     for (x,y) in coords:
         row = int(np.floor((y+ratio)*size/(2*ratio)))
         col = int(np.floor((x+ratio)*size/(2*ratio)))
-        newImage[row][col] = 255.0
+        try:
+            newImage[row][col] = 255.0
+        except:
+            pass
     return newImage
     
 
@@ -149,7 +152,7 @@ def doThings(ratio=gearRatio, overlap=gearOverlap, steps=computationSteps):
         coords = rotatePts(inputCoords, offset, theta*step)
         addPoints = []
         for coord in coords:
-            if dist(*coord)<(ratio+1-overlap):
+            if dist(*coord)<ratio:
                 addPoints += [coord]
         # Rotate the points that contribute to the output gear's profile
         for extraRotation in range(ratio):
@@ -170,6 +173,6 @@ def doThings(ratio=gearRatio, overlap=gearOverlap, steps=computationSteps):
     outFilename = tkFileDialog.asksaveasfilename(defaultextension='.png', initialfile='crossbar')
     writeOutputGear(crossbar, outFilename)
     #return inputGear, outputGear
-    
+ 
 if __name__ == '__main__':
     doThings()
